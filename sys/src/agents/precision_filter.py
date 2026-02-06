@@ -35,57 +35,30 @@ class PrecisionFilterAgent:
         evidence = obs.get("evidence", "")
 
         prompt = f"""
-You are a clinical quality auditor validating extracted
-EHR FLOWSHEET OBSERVATIONS for BENCHMARK EVALUATION (SYNUR).
+You are validating extracted clinical observations for a benchmark evaluation.
 
-Your task is to decide whether the following extracted observation
-should be KEPT or DROPPED.
+TASK:
+Decide whether this single extracted observation should be KEPT or DROPPED.
 
----------------------------------
-KEEP AN OBSERVATION ONLY IF:
----------------------------------
+VERY IMPORTANT:
+- You must be STRICT.
+- Do NOT keep interpretations or abstractions.
+- Do NOT keep negatives unless explicitly negated.
 
-• The evidence is copied verbatim from the transcript.
-• The evidence clearly supports the extracted value.
-• The value strictly follows the schema definition.
-• No inference, interpretation, or abstraction is involved.
-• Negative values are explicitly stated with clear negation.
+OUTPUT (JSON ONLY):
+{{ "decision": "KEEP" or "DROP", "reason": "<short reason>" }}
 
----------------------------------
-DROP THE OBSERVATION IF:
----------------------------------
-
-• The evidence is vague, indirect, or incomplete.
-• The value is inferred or normalized.
-• The concept is only implied.
-• The evidence does not directly justify the value.
-• Negation is assumed rather than spoken.
-
----------------------------------
-OUTPUT FORMAT (JSON ONLY)
----------------------------------
-
-{{
-  "decision": "KEEP" or "DROP",
-  "reason": "<short, concrete reason>"
-}}
-
----------------------------------
-OBSERVATION
----------------------------------
+OBSERVATION:
 id: {cid}
 name: {name}
 value_type: {vtype}
-allowed_values: {json.dumps(enum_list, ensure_ascii=False)}
+value_enum: {json.dumps(enum_list, ensure_ascii=False)}
 value: {json.dumps(value, ensure_ascii=False)}
 evidence: {json.dumps(evidence, ensure_ascii=False)}
 
----------------------------------
-TRANSCRIPT
----------------------------------
+TRANSCRIPT:
 {transcript}
 """.strip()
-
 
         raw = generate_response(
             self.model,

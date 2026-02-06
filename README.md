@@ -40,6 +40,12 @@ Our approach follows a **strict extract–validate–filter pipeline** designed 
 
 ---
 
+## Model
+
+We use **LLaMA-3.3** via **Ollama** with deterministic decoding
+(temperature = 0) for all extraction and precision-filtering steps.
+---
+
 ## Code Location
 
 All code used for inference is located under the `sys/src/` directory
@@ -50,7 +56,7 @@ All code used for inference is located under the `sys/src/` directory
 ## Best Performing Setup
 
 We evaluated multiple system configurations.  
-The **highest development performance** was achieved with the following setup (**Second Setup**):
+The **highest  performance** was achieved with the following setup:
 
 - Transcript segmentation: **disabled**
 - Suppression table: **disabled**

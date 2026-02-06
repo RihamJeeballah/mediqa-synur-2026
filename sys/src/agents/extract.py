@@ -40,95 +40,44 @@ class ExtractorAgent:
             return []
 
         prompt = f"""
-You are an expert clinical documentation system specialized in
-ELECTRONIC HEALTH RECORD (EHR) FLOWSHEET POPULATION FROM NURSE DICTATION.
+You are a clinical information extraction system.
 
-This task comes from the SYNUR dataset (synthetic nurse dictations).
-All extractable observations are explicitly spoken in the transcript.
+TASK:
+Extract ONLY observations that are explicitly stated in the transcript.
 
-You are given:
-• A nurse TRANSCRIPT (spoken dictation)
-• A FLOWSHEET SCHEMA defining allowed clinical OBSERVATION CONCEPTS
+STRICT EVIDENCE RULES (VERY IMPORTANT):
+1) The field "evidence" MUST be an EXACT substring copied from the transcript (verbatim).
+2) Do NOT write evidence like: "no mention", "not explicitly stated", "not mentioned".
+3) Do NOT use hedging in evidence: "could", "likely", "possibly", "suggest", "indicate", "maybe".
+4) If you cannot copy a supporting substring from the transcript, SKIP the observation.
 
-Your job is to extract ONLY the observations that are:
-• Explicitly stated in the transcript
-• Directly mappable to the provided schema
-• Canonicalizable to the schema value definitions
+NO-INFERENCE RULES:
+- Do NOT infer new information.
+- Do NOT guess missing values.
+- Do NOT convert a number mentioned for one concept into a value for another concept.
 
----------------------------------
-FLOWSHEET EXTRACTION RULES
----------------------------------
+NEGATION RULE:
+- Only output negative values (e.g., "No", "None", "Absent") if the transcript explicitly negates it
+  using words like: "no", "denies", "without", "absent", "none".
 
-• Each schema entry represents ONE clinical observation concept.
-• You may only extract observations listed in the schema.
-• Values MUST respect the concept's value_type and value_enum.
-• Do NOT invent new concepts or values.
-
----------------------------------
-STRICT EVIDENCE REQUIREMENTS (MANDATORY)
----------------------------------
-
-1) The "evidence" field MUST be an EXACT, VERBATIM substring copied
-   directly from the transcript.
-2) The evidence must clearly and directly support the extracted value.
-3) If you cannot copy an exact supporting substring → DO NOT output
-   the observation.
-4) NEVER write evidence such as:
-   - "not mentioned"
-   - "not explicitly stated"
-   - "no information"
-   - "not discussed"
-5) NEVER paraphrase or summarize evidence.
-
----------------------------------
-NO INFERENCE POLICY (CRITICAL)
----------------------------------
-
-• DO NOT infer missing information.
-• DO NOT interpret clinical meaning.
-• DO NOT normalize unless explicitly stated.
-• DO NOT convert information from one concept to another.
-• DO NOT assume clinical defaults.
-
----------------------------------
-NEGATION POLICY
----------------------------------
-
-• Negative values (e.g., "No", "Absent", "None") are ONLY allowed if the
-  transcript explicitly uses negation words such as:
-  "no", "denies", "without", "absent", "none".
-
----------------------------------
-OUTPUT FORMAT (STRICT JSON ONLY)
----------------------------------
-
-Return JSON in EXACTLY this format:
-
+OUTPUT FORMAT (JSON ONLY):
 {{
   "observations": [
     {{
-      "id": "<schema id>",
-      "value": <canonical value>,
-      "evidence": "<exact substring from transcript>"
+      "id": "<id>",
+      "value": <value>,
+      "evidence": "<EXACT copied substring from transcript>"
     }}
   ]
 }}
 
-• Do NOT include explanations.
-• Do NOT include observations without valid evidence.
-• Do NOT include extra keys.
-• Output JSON only.
-
----------------------------------
-FLOWSHEET SCHEMA
----------------------------------
+SCHEMA:
 {json.dumps(schema_block, indent=2)}
 
----------------------------------
-TRANSCRIPT
----------------------------------
+TRANSCRIPT:
 {transcript}
 """.strip()
+
 
         raw = generate_response(self.model, prompt, temperature=0.0, max_tokens=700)
         obs = self._parse_observations(raw)
