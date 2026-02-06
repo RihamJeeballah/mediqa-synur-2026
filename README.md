@@ -58,8 +58,8 @@ All code used for inference is located under the `sys/src/` directory
 We evaluated multiple system configurations.  
 The **highest  performance** was achieved with the following setup:
 
-- Transcript segmentation: **disabled**
-- Suppression table: **disabled**
+- Transcript segmentation: **enabled**
+- Suppression table: **enabled**
 - Precision filtering agent: **enabled**
 - Batch size: **25**
 
