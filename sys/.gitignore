@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Data & outputs
+data/
+outputs/
+
+# VSCode
+.vscode/
+
+# Environment
+.env
+.env.*
+*.log
+
+# Zip / large files
+*.zip
+
+# OS
+.DS_Store
