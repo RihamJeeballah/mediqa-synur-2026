@@ -19,7 +19,7 @@ No training is performed; the system operates fully at inference time.
 ---
 
 ## Method Overview
-## 3.3 Multi-Agent System Architecture
+## Multi-Agent System Architecture
 
 We propose a multi-stage, multi-agent architecture for extracting structured nursing observations from free-text clinical transcripts in the **MEDIQA-SYNUR** task. The system is explicitly designed to prioritize evidence-grounded extraction and to mitigate common failure modes observed during development, including hallucinated observations, implicit inference, and systematic false positives.
 
@@ -46,7 +46,7 @@ The MEDIQA-SYNUR observation schema contains 192 distinct categories, making sin
 
 ---
 
-## 3.3.1 Extractor Agent (LLM-Based)
+### 1 Extractor Agent (LLM-Based)
 
 The `ExtractorAgent` performs the initial identification of candidate nursing observations using a large language model (**LLaMA-3.3 via Ollama**). To handle the large schema size, schema batching is combined with optional transcript segmentation, resulting in multiple localized extraction passes.
 
@@ -60,7 +60,7 @@ Inference, abstraction, and speculation are explicitly prohibited. Negative valu
 
 ---
 
-## 3.3.2 Validation Agent
+## 2 Validation Agent
 
 The `ValidatorAgent` applies deterministic, rule-based validation to the raw outputs produced by the extraction agent. Its primary role is to remove structurally invalid, weakly grounded, or speculative observations before further refinement.
 
@@ -76,7 +76,7 @@ This agent substantially reduces hallucinated and semantically invalid predictio
 
 ---
 
-## 3.3.3 Precision-Oriented Filtering Agent
+## 3 Precision-Oriented Filtering Agent
 
 Despite strict validation, development analysis revealed residual over-prediction caused by subtle semantic drift or overly permissive extraction. To address this, a `PrecisionFilterAgent` is applied as an additional refinement stage.
 
@@ -90,7 +90,7 @@ The agent outputs a binary decision (**KEEP** or **DROP**) along with a brief ra
 
 ---
 
-## 3.3.4 Conservative Suppression Table
+## 4 Conservative Suppression Table
 
 In addition to agent-based filtering, a lightweight deterministic suppression mechanism is applied as a final post-processing step. This suppression table is derived from systematic error analysis on the development set and is applied uniformly across development and test data without any test-time tuning.
 
