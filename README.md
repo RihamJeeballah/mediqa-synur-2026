@@ -42,28 +42,7 @@ Our approach follows a **strict extract–validate–filter pipeline** designed 
 
 ## Code Location
 
-All code used for inference is located under the `sys/src/` directory.
-
-
-## Repository Structure
-
-my_system/
-├── src/
-│ ├── agents/
-│ │ ├── extract.py # Observation extraction (prompt-based)
-│ │ ├── validate.py # Schema and evidence validation
-│ │ ├── precision_filter.py # Precision filtering agent
-│ │ ├── detect.py
-│ │ └── schema_retriever.py # (not used in final setup)
-│ ├── lm_utils.py # LLM interaction utilities
-│ ├── schema.py # Schema loader
-│ ├── run.py # Main inference entry point
-│ 
-│
-├── data/ # Dataset files (not included)
-├── outputs/ # Model outputs (not included)
-└── README.md
-
+All code used for inference is located under the `sys/src/` directory
 
 
 ---
