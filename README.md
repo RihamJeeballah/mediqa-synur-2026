@@ -1,3 +1,7 @@
+**Project lead:** Dr. Abdul Rahman  
+**username:** akabdul
+
+
 # MEDIQA-SYNUR 2026 – Nursing Observation Extraction
 
 This repository contains our submission code for the **MEDIQA-SYNUR** shared task (Synthetic Nursing Observation Extraction).
